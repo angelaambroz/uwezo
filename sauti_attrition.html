@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Sauti attrition</title>
+        <script type="text/javascript" src="d3/d3.js"></script>
+    <style>
+
+      .title {
+        font: 300 40px Courier;
+      }
+
+      .subtitle {
+        font: small-caps italic 14px Arial, sans-serif;
+        }
+
+      .axis {
+        font: small-caps 14px Arial, sans-serif;
+      }
+
+      .title,
+      .subtitle,
+      .axis {
+        fill: #808080;
+      }
+
+      .region {
+        fill: #fff;
+          }
+
+      rect.M {
+        fill-opacity: .5;
+        fill: #1f77b4;
+        }
+
+      rect.F {
+          fill-opacity: .6;
+          fill: #e377c2;
+          } 
+
+
+    </style>
+
+    </head>
+
+
+    <body>
+
+        <script type="text/javascript">
+
+        "use strict";
+
+        /*TO DO:
+      - labels (hover?)
+      - 100% 
+      - add total N to subtitle
+        */
+
+            var rounds = [
+              { round: 0,
+                theme: "baseline" } ,
+              { round: 1,
+                theme: "prelim CATI wave 1" } ,
+              { round: 2,
+                theme: "prelim CATI wave 2" } ,
+              { round: 3,
+                theme: "information" } ,
+              { round: 4,
+                theme: "health" } ,
+              { round: 5,
+                theme: "constitution" } ,
+              { round: 6,
+                theme: "water" } ,
+              { round: 7,
+                theme: "nutrition" } ,
+              { round: 8,
+                theme: "security" } ,
+              { round: 9,
+                theme: "cash transfers" } ,
+              { round: 10,
+                theme: "political poll" } ,
+              { round: 11,
+                theme: "natural resources" } ,
+              { round: 12,
+                theme: "respondent evaluation" } ,
+              { round: 13,
+                theme: "labor" } ,
+              { round: 14,
+                theme: "2nd draft, constitution" } ,
+              { round: 15,
+                theme: "electricity and transport" } ,
+              { round: 16,
+                theme: "health" } ,
+              { round: 17,
+                theme: "education" } ,
+              { round: 18,
+                theme: "financial inclusion" } ,
+              { round: 19,
+                theme: "corruption" } 
+            ];
+
+            var margin = {top: 50, right: 10, bottom: 100, left: 30},
+                w = 600 - margin.left - margin.right,
+                h = 500 - margin.top - margin.bottom,
+                padding = 0,
+                barWidth = Math.floor(w / 25) - 1,
+                dataset, round0, round1;
+
+            var x = d3.scale.ordinal()
+                    .rangeRoundBands([0, w], 0.05);
+
+            var y = d3.scale.linear()
+                    .range([h-padding, padding]);
+
+
+
+            //DATA
+            d3.csv("_attrition.csv", function(error,csv) {
+                    
+                    //de-stringing
+                    csv.forEach(function(d){ 
+                        for(var j=0; j<20; j++) {
+                            if (j==1 || j==2) continue;
+                            d['people_'+j] = +d['people_'+j];
+                        }
+                    });
+                    dataset = csv;
+
+            //csv.sort(function(a,b) { return b.region - a.region; });
+
+            var people1 = d3.max(dataset, function(d) { return d.people_0; }),
+              round0 = d3.min(rounds, function(d) { return d.round; }), 
+              round1 = d3.max(rounds, function(d) { return d.round; }),
+              round = round0;
+
+
+          // Produce a map from region to [male, female].
+          dataset = d3.nest()
+              .key(function(d) { return d.region; })
+              .sortKeys(d3.ascending)
+              .key(function(d) { return d.sex; })
+              .entries(dataset);
+
+
+            //canvas
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("width", w + margin.left + margin.right)
+                        .attr("height", h + margin.top + margin.bottom)
+                      .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+            //creating groups for regions
+            var regions = svg.append("g")
+                .classed("regions", true);
+
+            x.domain(dataset.map(function(d) { return d.key; }));
+            y.domain([0, people1]);
+
+              var region = regions.selectAll(".region")
+                    .data(dataset)
+                    .enter()
+                    .append("g")
+                    .attr("class", "region")
+                    .attr("transform", function(d) { 
+                      return "translate(" + x(d.key) + ",0)"; 
+                    });
+
+                  region.selectAll("rect")
+                    .data(function(region) { 
+                      return region.values;
+                    })
+                    .enter()
+                    .append("rect")
+                    .attr("x", 0)
+                    .attr("y", function(region) {
+                      return y(region.values[0].people_0);
+                    })
+                    .attr("width", barWidth)
+                    .attr("height", function(region) { return h-y(region.values[0].people_0); })
+                    .attr("class", function(region) { return region.key; });
+
+                  region.append("line");
+
+                  region.selectAll("line")
+                    .attr("x1", 0)
+                    .attr("x2", 21)
+                    .attr("y1", function(region, i) {
+                      if (region.values[0].values[0].people_0 > region.values[1].values[0].people_0) {
+                        return y(region.values[0].values[0].people_0);
+                      } else {
+                        return y(region.values[1].values[0].people_0);
+                      }
+                    })
+                    .attr("y2", function(region) {
+                      if (region.values[0].values[0].people_0 > region.values[1].values[0].people_0) {
+                        return y(region.values[0].values[0].people_0);
+                      } else {
+                        return y(region.values[1].values[0].people_0);
+                      }
+                    })
+                    .attr("class", "reflines")
+                    .style("stroke-width", 1)
+                    .style("stroke", function(region) {
+                      if (region.values[0].values[0].people_0 > region.values[1].values[0].people_0) {
+                        return "#e377c2";
+                      } else {
+                        return "#1f77b4";
+                      }
+                    });
+
+
+            //title, subtitle
+            var title = svg.append("text")
+              .attr("class", "title")
+              .attr("dx", (w-300)+"px")
+              .attr("dy", ".71em")
+              .text("Baseline");
+
+            var subtitle = svg.append("text")
+              .data(rounds)
+              .attr("class", "subtitle")
+              .attr("dx", (w-200)+"px")
+              .attr("dy", "50px")
+              .text(" ");
+
+            //axes
+            var yAxis = d3.svg.axis()
+              .scale(y)
+              .orient("left")
+              .tickSize(.5)
+              .ticks(10);
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
+            var xAxis = d3.svg.axis()
+              .scale(x)
+              .orient("bottom")
+              .tickSize(.1);
+
+            svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "rotate(-90)")
+              .attr("transform", "translate(0," + h + ")")
+              .call(xAxis)
+              .selectAll("text")  
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", function(d) {
+                    return "rotate(-90)" 
+                });
+
+
+
+              //Transition between rounds
+
+                  d3.select(window).on("keydown", function() {
+
+                    switch (d3.event.keyCode) {
+                    case 39: round = Math.min(round1, round+1);   
+                    break;
+                    case 37: round = Math.max(round0, round-1); 
+                    break;
+                    case 38: round = round1;
+                    break;
+                    case 40: round = round0;
+                    break;
+                    }
+                    update ();
+                  });
+
+                  function update() {
+
+                  title.text(function(d) {
+                    if (round === 0 ) {
+                      return "Baseline";
+                    } else {
+                      return "Round "+ round;
+                    }
+                    });
+
+                    subtitle.text(function(d) {
+                    if (round === 0 ) {
+                      return null;
+                    } else {
+                      return rounds[round].theme;
+                    }
+                    });
+
+  
+                  region.selectAll("rect")
+                    .transition()
+                    .duration(500)
+                    .attr("y", function(region) { 
+                      if (round===1 || round===2) {
+                        return y(region.values[0].people_0);
+                      } else {
+                        return y(region.values[0]["people_"+parseInt(round)]);   
+                      }
+                    })
+                    .attr("height", function(region) { 
+                      if (round===1 || round===2) {
+                        return h - y(region.values[0].people_0);
+                      } else {
+                        return h - y(region.values[0]["people_"+parseInt(round)]);   
+                      }
+                    })
+
+                  }; //end update function
+
+
+            }); //csv closer
+
+        </script>
+
+    </body>
+</html>   
