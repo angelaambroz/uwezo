@@ -38,11 +38,20 @@ log using "$uwezo/logs/`date'_Logged_at_`cti'.log", replace
 
 foreach i in KE TZ UG {
 	u "$uwezo/`i'12_hhld.dta", clear
-	egen unique = concat(id_hh childNo), format(%24.0f)
+	
+	cap confirm var childNo
+	if _rc==0 {
+		egen unique = concat(id_hh childNo), format(%24.0f)
+	}
+	if _rc!=0 {
+		egen unique = concat(id_hh id), format(%24.0f)
+	}
+	
 	isid unique
 	
 	collapse (mean) english, by(id_regionName gender)
 
+	g year = 2012
 	g country = ""
 	g moment = "`i'"
 	
@@ -50,13 +59,11 @@ foreach i in KE TZ UG {
 	replace country = "Tanzania" if moment == "TZ"
 	replace country = "Uganda" if moment == "UG"
 	
-	g year = 2012
-	
 	di "`i'"
 	
 	compress
 	tempfile temp`i'
-	save temp`i' //things break here
+	save temp`i', replace 
 		
 	}
 
@@ -70,10 +77,9 @@ foreach i in TZ UG {
 	} 
 
 
-
 //csv
 
-outsheet using "$uwezo/uwezo_data.csv", c replace
+outsheet using "$uwezo/../../p_uwezo/uwezo_data.csv", c replace
 
 
 	
