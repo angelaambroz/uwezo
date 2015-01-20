@@ -9,7 +9,7 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 
 
 ### To Do
-1. Decide on exact bar chart type. 
+~~1. Decide on exact bar chart type.~~
 2. Prep the data for each country in `Stata`. 
 3. Begin adapting the attrition dynamic bar chart...
 
