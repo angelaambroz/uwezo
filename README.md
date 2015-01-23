@@ -5,7 +5,7 @@ Uwezo demo
 
 ### Main idea
 
-Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for 2012. Click for further information (side, informative tooltip?). Drop-down for `countries' (TZ, KE, UG) and `years' (2009/2010, 2011, 2012). ~~(`Subject' dimension to be added.)~~ `subject' added.
+Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for 2012. Click for further information (side, informative tooltip?). Drop-down for `countries` (TZ, KE, UG) and `years` (2009/2010, 2011, 2012). ~~(`Subject` dimension to be added.)~~ `subject` added.
 
 
 ### To Do
@@ -21,7 +21,7 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 9. Style in general. 
 10. ~~Figure out how to call different `subjects`.~~
 11. `Exit`/`enter`. Transitions!
-12. ~~Don't keep replicating the same `svg'...~~
+12. ~~Don't keep replicating the same `svg`...~~
 13. Why is `country` breaking in and out of the function (but only for `console.log` and `title`)?
 14. ~~Call `year`. (`switch` statement isn't working...)~~
 15. Make `barWidth` a function of the number of regions. 
