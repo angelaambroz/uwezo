@@ -191,29 +191,29 @@ rect:first-child {
               var region = regions.selectAll(".region")
                     .data(dataset);
 
-                region.exit().remove();
-
                 region.enter()
                     .append("g")
                     .attr("class", "region");
 
+                    //This transition moves the rects horizontally. 
+                    //exit().remove() is not working.
                 region.transition()
                       .duration(1500)
                       .attr("transform", function(d) { 
                       return "translate(" + x(d.key) + ",0)"; 
                     });
 
-
+                region.exit().remove();
 
                 var rects = region.selectAll("rect")
                     .data(function(region) { 
                       return region.values;
                     });
 
-
                 rects.enter()
                     .append("rect");
 
+                //This transition will only affect rect heights.
                 rects.transition()
                     .duration(1500)
                     .attr("x", 0)
@@ -263,14 +263,17 @@ rect:first-child {
               .attr("dx", (w-300)+"px")
               .attr("dy", ".71em");
 
+              //Not sure about this. 
             title.transition()
               .text(country);
 
             var subtitle = svg.append("text")
               .attr("class", "subtitle")
               .attr("dx", (w-200)+"px")
-              .attr("dy", "50px")
-              .transition()
+              .attr("dy", "50px");
+
+
+            subtitle.transition()
               .text(year);
 
             // Axes
