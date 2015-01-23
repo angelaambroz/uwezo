@@ -13,7 +13,7 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 1. ~~Decide on exact bar chart type.~~ 
 2. ~~Prep the data for each country in `Stata`. Need: Separate dataset for each country (call it like a url).~~ 
 3. ~~Begin adapting the attrition dynamic bar chart...~~
-4. _Design principles_: Fancy fonts (Garamond, NYorker, Apple Garamond - italic), browns/earth tones
+4. ~~_Design principles_: Fancy fonts (Garamond, NYorker, Apple Garamond - italic), browns/earth tones.~~
 5. ~~Drop-down menus for country, subject and year (review all that stuff about embedding functions in sites).~~
 6. Spinning wheel - or just keep the `Submit` button grayed out while loading.
 7. What to do with Swahili? Have it only be an option for TZ/KE?

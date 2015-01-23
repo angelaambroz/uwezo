@@ -191,12 +191,19 @@ rect:first-child {
               var region = regions.selectAll(".region")
                     .data(dataset);
 
+                region.exit().remove();
+
                 region.enter()
                     .append("g")
-                    .attr("class", "region")
-                    .attr("transform", function(d) { 
+                    .attr("class", "region");
+
+                region.transition()
+                      .duration(1500)
+                      .attr("transform", function(d) { 
                       return "translate(" + x(d.key) + ",0)"; 
                     });
+
+
 
                 var rects = region.selectAll("rect")
                     .data(function(region) { 
@@ -207,7 +214,9 @@ rect:first-child {
                 rects.enter()
                     .append("rect");
 
-                rects.attr("x", 0)
+                rects.transition()
+                    .duration(1500)
+                    .attr("x", 0)
                     .attr("y", function(region) {
                       for (var i=0; i<2; i++) {
                          if (!region.values[i]) {
@@ -243,23 +252,25 @@ rect:first-child {
                     })
                     .attr("class", function(region) { return region.key; });
 
-                rects.transition()
-                  .duration(1500);
-
                 rects.exit().remove();
+
+
 
             // Title, subtitle
 
             var title = svg.append("text")
               .attr("class", "title")
               .attr("dx", (w-300)+"px")
-              .attr("dy", ".71em")
+              .attr("dy", ".71em");
+
+            title.transition()
               .text(country);
 
             var subtitle = svg.append("text")
               .attr("class", "subtitle")
               .attr("dx", (w-200)+"px")
               .attr("dy", "50px")
+              .transition()
               .text(year);
 
             // Axes
