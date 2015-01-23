@@ -5,8 +5,8 @@
 * DATE MODIFIED: 
 * PURPOSE: A d3.js project to visualize English/Math/Swahili scores in Kenya, Tanzania
 * and Uganda from 2009, 2010, 2012. 
-* USES DATA: 
-* CREATES DATA: 
+* USES DATA: Everything I could find here: http://www.uwezo.net/publications/datasets/?y=2009/10
+* CREATES DATA: uwezo_data.csv
 * ***********************************************************************************
 
 
@@ -17,10 +17,6 @@ clear matrix
 cap log c
 set mem 500m
 
-
-**	Setting up the references	**
-
-global uwezo	"$stuff/Projects/d3js/_data/Uwezo"
 
 **	Log	**
 
@@ -33,54 +29,61 @@ log using "$uwezo/logs/`date'_Logged_at_`cti'.log", replace
 
 **	Collapsing	**
 // Target: csv file with region, sex, respondents
-// Can append year/country later all together. Or should it call diff files?
+// Can append year/country later all together.
 
 
 foreach i in KE TZ UG {
-	u "$uwezo/`i'12_hhld.dta", clear
-	
-	cap confirm var childNo
-	if _rc==0 {
-		egen unique = concat(id_hh childNo), format(%24.0f)
-	}
-	if _rc!=0 {
-		egen unique = concat(id_hh id), format(%24.0f)
-	}
-	
-	isid unique
-	
-	collapse (mean) english, by(id_regionName gender)
-
-	g year = 2012
-	g country = ""
-	g moment = "`i'"
-	
-	replace country = "Kenya" if moment == "KE"
-	replace country = "Tanzania" if moment == "TZ"
-	replace country = "Uganda" if moment == "UG"
-	
-	di "`i'"
-	
-	compress
-	tempfile temp`i'
-	save temp`i', replace 
+	foreach j in 10 11 12 {
+		u "$uwezo/data/`i'`j'_hhld.dta", clear
 		
+		collapse (mean) english math, by(id_regionName gender)
+
+		g year = .
+		g country = ""
+		g moment = "`i'"
+		g moment2 = "`j'"
+		
+		replace country = "Kenya" if moment == "KE"
+		replace country = "Tanzania" if moment == "TZ"
+		replace country = "Uganda" if moment == "UG"
+		
+		replace year = 2010 if moment2 == "10"
+		replace year = 2011 if moment2 == "11"
+		replace year = 2012 if moment2 == "12"
+		
+		di "`i'" "`j'"
+		
+		compress
+		tempfile temp`i'`j'
+		save temp`i'`j', replace 
+		}
 	}
 
 
+	
 **	Appending	**
 
-u "tempKE", clear
 
-foreach i in TZ UG {
-	append using "temp`i'"
-	} 
+foreach i in KE UG TZ {
+	u "temp`i'10", clear
 
+	foreach j in 11 12 {
+		append using "temp`i'`j'"
+	}
 
-//csv
+	rename id_regionName region
+	drop moment*
 
-outsheet using "$uwezo/../../p_uwezo/uwezo_data.csv", c replace
+	//csv
 
+	if c(os)=="Windows" {
+		outsheet using "$uwezo/`i'.csv", c replace
+	}
+	if c(os)=="MacOSX" {
+		outsheet using "$uwezo/../../p_uwezo/`i'.csv", c replace
+	}
 
+	}
 	
-	
+
+

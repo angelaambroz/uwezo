@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<title>Visualizing Uwezo</title>
+<script type="text/javascript" src="d3/d3.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Sorts+Mill+Goudy:400,400italic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Playfair+Display:400,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+<style>
+
+body {
+  margin: 50px;
+}
+
+.title {
+  font: 400 40px 'Playfair Display', serif;
+}
+
+.subtitle {
+  font: small-caps italic 14px 'Playfair Display', serif;
+}
+
+.axis {
+  font: small-caps 14px 'Playfair Display', serif;
+}
+
+p {
+  font: 400 18px 'Sorts Mill Goudy', serif;
+}
+
+.user-form select {
+  border: none;
+  font: 100 14px 'Sorts Mill Goudy', serif;
+}
+
+/*form  {
+  font: 100 12px 'Sorts Mill Goudy', serif;
+  padding: 2px 8px;
+  border: solid 1px #ccc;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
+  margin: 5px;
+}*/
+
+.update-button {
+  font: 100 14px 'Sorts Mill Goudy', serif;
+  padding: 2px 8px;
+  border: solid 1px #ccc;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
+  margin: 5px;
+}
+
+
+.update-button:hover {
+  background-color: #999;
+  cursor: pointer;
+}
+
+.update-button:active {
+  background-color: #666;
+}
+
+.title,
+.subtitle,
+.axis {
+  fill: #897171;
+}
+
+.region {
+  fill: #fff;
+}
+
+rect {
+  fill-opacity: .5;
+  fill: #1f77b4;
+}
+
+rect:first-child {
+  fill-opacity: .6;
+  fill: #e377c2;
+} 
+
+
+</style>
+
+</head>
+
+
+    <body>
+
+     <p>Hi! Building the Uwezo viz. (Under heavy-duty construction.)</p>
+
+     
+    <div class="user-form">
+      <p>
+      Country: <select id="country">
+          <option value="Kenya" selected>Kenya</option>
+          <option value="Tanzania">Tanzania</option>
+          <option value="Uganda">Uganda</option>
+        </select>
+      </p>
+
+      <p>
+      Subject: <select id="subject">
+          <option value="English" selected>English</option>
+          <option value="Math">Math</option>
+          <option value="Swahili" disabled>Swahili</option>
+        </select>
+      </p>
+
+      <p>
+      Year: <select id="year">
+          <option value="2010" selected>2010</option>
+          <option value="2011">2011</option>
+          <option value="2012">2012</option>
+        </select>
+      </p>
+
+      <input name="updateButton" 
+           type="button" 
+           class="update-button"
+           value="Update" />
+    
+    </div>
+
+
+
+
+  <script type="text/javascript">
+
+  "use strict";
+
+    var margin = {top: 50, right: 10, bottom: 100, left: 30},
+        w = 600 - margin.left - margin.right,
+        h = 500 - margin.top - margin.bottom,
+        padding = 0,
+        barWidth = Math.floor(w / 25) - 1,
+        dataset, year0, year1;
+
+    var x = d3.scale.ordinal()
+            .rangeRoundBands([0, w], 0.05);
+
+    var y = d3.scale.linear()
+            .range([h-padding, padding]);
+
+
+    //canvas
+    var svg = d3.select("body")
+        .append("svg")
+        .attr("width", w + margin.left + margin.right)
+        .attr("height", h + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    function viz() {
+
+      //Why do I have to do this again?
+      country = document.getElementById("country").value;
+      year = document.getElementById("year").value;
+
+      var subject1 = d3.max(dataset, function(d) { return d[subject]; }),
+          subject0 = d3.min(dataset, function(d) { return d[subject]; });
+
+          // Produce a map from region to [male, female].
+          dataset = d3.nest()
+              .sortKeys(d3.ascending)
+              .key(function(d) { return d.region; })
+              .key(function(d) { return d.gender; })
+              .key(function(d) { return d.year; })
+              .entries(dataset);
+
+            //creating groups for regions
+            var regions = svg.append("g")
+                .classed("regions", true);
+
+            x.domain(dataset.map(function(d) { return d.key; }));
+            y.domain([0,7]); //i think the ranges are 0-5 (english), 0-7 math
+
+              var region = regions.selectAll(".region")
+                    .data(dataset);
+
+                region.enter()
+                    .append("g")
+                    .attr("class", "region")
+                    .attr("transform", function(d) { 
+                      return "translate(" + x(d.key) + ",0)"; 
+                    });
+
+                var rects = region.selectAll("rect")
+                    .data(function(region) { 
+                      return region.values;
+                    });
+
+
+                rects.enter()
+                    .append("rect");
+
+                rects.attr("x", 0)
+                    .attr("y", function(region) {
+                      console.log(region.values);
+                      if (year==2010) {
+                        return y(region.values[0].values[0][subject]);
+                      }
+                      if (year==2011) {
+                        return y(region.values[1].values[0][subject]);
+                      }
+                      if (year==2012) {
+                        return y(region.values[2].values[0][subject]);
+                      }
+                    })
+                    .attr("width", barWidth)
+                    .attr("height", function(region) { 
+                      if (year==2010) {
+                        return h-y(region.values[0].values[0][subject]);
+                      }
+                      if (year==2011) {
+                        return h-y(region.values[1].values[0][subject]);
+                      }
+                      if (year==2012) {
+                        return h-y(region.values[2].values[0][subject]);
+                      }
+                    })
+                    .attr("class", function(region) { return region.key; });
+
+                rects.transition()
+                  .duration(1500);
+
+                rects.exit().remove();
+
+            // Title, subtitle
+
+            var title = svg.append("text")
+              .attr("class", "title")
+              .attr("dx", (w-300)+"px")
+              .attr("dy", ".71em")
+              .text(country);
+
+            var subtitle = svg.append("text")
+              .attr("class", "subtitle")
+              .attr("dx", (w-200)+"px")
+              .attr("dy", "50px")
+              .text(year);
+
+            // Axes
+
+            var yAxis = d3.svg.axis()
+              .scale(y)
+              .orient("left")
+              .tickSize(.5)
+              .ticks(5);
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
+            var xAxis = d3.svg.axis()
+              .scale(x)
+              .orient("bottom")
+              .tickSize(.1);
+
+            svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "rotate(-90)")
+              .attr("transform", "translate(0," + h + ")")
+              .call(xAxis)
+              .selectAll("text")  
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", function(d) {
+                    return "rotate(-90)" 
+                });
+    } //end viz function
+
+
+d3.select('input[type=button]').on('click', function() {
+
+        var country = document.getElementById("country").value,
+            url = country.toUpperCase();
+            subject = document.getElementById("subject").value,
+            year = document.getElementById("year").value ;
+
+        url = url.split("");
+        url = url[0] + url[1] + ".csv";
+
+        subject = subject.toLowerCase();
+
+
+            //DATA
+            d3.csv(url, function(error,csv) {
+
+              //de-stringing
+              csv.forEach(function(d){ 
+                 d.english = +d.english;
+                 d.math = +d.math;
+                 d.year = +d.year;
+              });
+              dataset = csv;
+
+            viz();
+
+            }); //csv closer
+
+}); //button function
+
+        </script>
+
+    </body>
+</html>   
