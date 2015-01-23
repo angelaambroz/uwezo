@@ -20,16 +20,16 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 8. Style the ugly drop-down boxes.
 9. Style in general. 
 10. ~~Figure out how to call different `subjects'.~~
-11. `Exit'/`enter'. Transitions!
+11. `Exit`/`enter`. Transitions!
 12. ~~Don't keep replicating the same `svg'...~~
-13. Why is `country' breaking in and out of the function (but only for `console.log' and `title')?
-14. ~~Call `year'. (`switch' statement isn't working...)~~
-15. Make `barWidth' a function of the number of regions. 
+13. Why is `country` breaking in and out of the function (but only for `console.log' and `title`)?
+14. ~~Call `year`. (`switch` statement isn't working...)~~
+15. Make `barWidth` a function of the number of regions. 
 16. ~~Rift Valley (KE) is missing 2011. Mtwara (TZ) is missing 2012. Add them as missing (in `Stata').~~
 17. Center x-axis labels.
-18. ~~Axis a dynamic function of `subject'.~~
+18. ~~Axis a dynamic function of `subject`.~~
 19. Tooltip: Side info panel.
-20. Tooltip: Boys + Girls scores, on `hover'. 
+20. Tooltip: Boys + Girls scores, on `hover`. 
   
 
 
