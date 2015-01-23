@@ -154,6 +154,15 @@ rect:first-child {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    function scaled() {
+      if (subject=="english") {
+        return [0,5];
+      }
+      if (subject=="math") {
+        return [0,7];
+      }
+    }
+
 
     function viz() {
 
@@ -177,7 +186,7 @@ rect:first-child {
                 .classed("regions", true);
 
             x.domain(dataset.map(function(d) { return d.key; }));
-            y.domain([0,7]); //i think the ranges are 0-5 (english), 0-7 math
+            y.domain(scaled(subject));
 
               var region = regions.selectAll(".region")
                     .data(dataset);
@@ -200,27 +209,36 @@ rect:first-child {
 
                 rects.attr("x", 0)
                     .attr("y", function(region) {
-                      console.log(region.values);
-                      if (year==2010) {
+                      for (var i=0; i<2; i++) {
+                         if (!region.values[i]) {
+                            return 0; 
+                         }
+                      if (year==2010 && region.values[0] !== undefined ) {
                         return y(region.values[0].values[0][subject]);
                       }
-                      if (year==2011) {
+                      if (year==2011 && region.values[1] !== undefined) {
                         return y(region.values[1].values[0][subject]);
                       }
-                      if (year==2012) {
+                      if (year==2012 && region.values[2] !== undefined) {
                         return y(region.values[2].values[0][subject]);
                       }
+                       }
                     })
                     .attr("width", barWidth)
                     .attr("height", function(region) { 
-                      if (year==2010) {
+                      for (var i=0; i<2; i++) {
+                         if (!region.values[i]) {
+                            return 0; 
+                         }
+                      if (year==2010 && region.values[0] !== undefined) {
                         return h-y(region.values[0].values[0][subject]);
                       }
-                      if (year==2011) {
+                      if (year==2011 && region.values[1] !== undefined) {
                         return h-y(region.values[1].values[0][subject]);
                       }
-                      if (year==2012) {
+                      if (year==2012 && region.values[2] !== undefined) {
                         return h-y(region.values[2].values[0][subject]);
+                      }
                       }
                     })
                     .attr("class", function(region) { return region.key; });
@@ -250,7 +268,7 @@ rect:first-child {
               .scale(y)
               .orient("left")
               .tickSize(.5)
-              .ticks(5);
+              .ticks(7);
 
             svg.append("g")
                 .attr("class", "y axis")

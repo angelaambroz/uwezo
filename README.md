@@ -5,7 +5,7 @@ Uwezo demo
 
 ### Main idea
 
-Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for 2012. Click for further information (side, informative tooltip?). Drop-down for `countries' (TZ, KE, UG) and `years' (2009/2010, 2011, 2012). (`Subject' dimension to be added.)
+Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for 2012. Click for further information (side, informative tooltip?). Drop-down for `countries' (TZ, KE, UG) and `years' (2009/2010, 2011, 2012). ~~(`Subject' dimension to be added.)~~ `subject' added.
 
 
 ### To Do
@@ -25,7 +25,11 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 13. Why is `country' breaking in and out of the function (but only for `console.log' and `title')?
 14. ~~Call `year'. (`switch' statement isn't working...)~~
 15. Make `barWidth' a function of the number of regions. 
-16. Rift Valley (KE) is missing 2011. Mtwara (TZ) is missing 2012. Add them as missing.
+16. ~~Rift Valley (KE) is missing 2011. Mtwara (TZ) is missing 2012. Add them as missing (in `Stata').~~
+17. Center x-axis labels.
+18. ~~Axis a dynamic function of `subject'.~~
+19. Tooltip: Side info panel.
+20. Tooltip: Boys + Girls scores, on `hover'. 
   
 
 
@@ -33,6 +37,7 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 
 * Data: [Uwezo - Datasets](http://www.uwezo.net/publications/datasets/?y=2012)
 * Resource: [Cynthia Brewer - ColorBrewer](https://github.com/mbostock/d3/tree/master/lib/colorbrewer)
+* Resource: [Mike Bostock - Population pyramid](http://bl.ocks.org/mbostock/4062085)
 * Resource: [Mike Bostock - Every ColorBrewer scale ever](http://bl.ocks.org/mbostock/5577023)
 * Example: [VxLabs - The best color interpolator is HSL (SYAC)](http://vxlabs.com/2013/10/04/d3-interpolators-vs-colorbrewer-single-hue-sequential-scales/)
 * Example: [VxLabs - Color interpolating](https://gist.github.com/cpbotha/6831663)
