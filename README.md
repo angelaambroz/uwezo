@@ -19,7 +19,7 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 7. What to do with Swahili? Have it only be an option for TZ/KE?
 8. Style the ugly drop-down boxes.
 9. Style in general. 
-10. ~~Figure out how to call different `subjects`.~~
+10. ~~Figure out how to call different `subjects`.~~ 
 11a. `Exit`/`enter`. Transitions! Country transitions (horizontal).
 11b. Year transitions (vertical).
 12. ~~Don't keep replicating the same `svg`...~~

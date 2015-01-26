@@ -129,7 +129,7 @@ rect:first-child {
         padding = 0,
         barWidth = Math.floor(w / 25) - 1,
         dataset = [], 
-        regions, region, rects, url;
+        regions, region, rects, url, cntry, yr;
 
     var x = d3.scale.ordinal()
             .rangeRoundBands([0, w], 0.05);
@@ -163,7 +163,6 @@ rect:first-child {
               .sortKeys(d3.ascending)
               .key(function(d) { return d.region; })
               .key(function(d) { return d.gender; })
-              .key(function(d) { return d.year; })
               .entries(dataset);
 
             //creating groups for regions
@@ -181,7 +180,6 @@ rect:first-child {
               .attr("class", "region");
 
             //This transition moves the rects horizontally. 
-            //Add .transition().duration() to get the bars sliding in.
             //exit().remove() is not working.
             region.transition()
               .duration(1500)
@@ -191,51 +189,28 @@ rect:first-child {
 
             region.exit().remove();
 
+
+
             rects = region.selectAll("rect")
                 .data(function(region) { 
                   return region.values;
                 });
 
             rects.enter()
-                .append("rect")
+                .append("rect");
+
+            rects.transition()
                 .attr("x", 0)
                 .attr("y", function(region) {
-                  for (var i=0; i<2; i++) {
-                     if (!region.values[i]) {
-                        return 0; 
-                     }
-                  if (year==2010 && region.values[0] !== undefined ) {
-                    return y(region.values[0].values[0][subject]);
-                  }
-                  if (year==2011 && region.values[1] !== undefined) {
-                    return y(region.values[1].values[0][subject]);
-                  }
-                  if (year==2012 && region.values[2] !== undefined) {
-                    return y(region.values[2].values[0][subject]);
-                  }
-                   }
+                  return y(region.values[0][subject]);
                 })
                 .attr("height", function(region) { 
-                  for (var i=0; i<2; i++) {
-                     if (!region.values[i]) {
-                        return 0; 
-                     }
-                  if (year==2010 && region.values[0] !== undefined) {
-                    return h-y(region.values[0].values[0][subject]);
-                  }
-                  if (year==2011 && region.values[1] !== undefined) {
-                    return h-y(region.values[1].values[0][subject]);
-                  }
-                  if (year==2012 && region.values[2] !== undefined) {
-                    return h-y(region.values[2].values[0][subject]);
-                  }
-                  }
+                  return h - y(region.values[0][subject]);
                 })
                 .attr("width", barWidth)
                 .attr("class", function(region) { return region.key; });
 
             rects.exit().remove();
-
 
 
             // Title, subtitle
@@ -287,24 +262,23 @@ rect:first-child {
                 .attr("transform", function(d) {
                     return "rotate(-90)" 
                 });
+
     } //end viz function
 
 
 d3.select('input[type=button]').on('click', function() {
 
         country = document.getElementById("country").value;
-        url = country.toUpperCase();
         subject = document.getElementById("subject").value;
         year = document.getElementById("year").value ;
 
-        url = url.split("");
-        url = url[0] + url[1] + ".csv";
+        cntry = country.toUpperCase();
+        cntry = cntry.split("");
+        yr = year.split("");
+
+        url = cntry[0] + cntry[1] + yr[2] + yr[3] + ".csv";
 
         subject = subject.toLowerCase();
-
-        console.log(subject);
-        console.log(country);
-        console.log(year);
 
             //DATA
             d3.csv(url, function(error,csv) {

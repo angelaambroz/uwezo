@@ -1,0 +1,9 @@
+region,gender,english,math,year,country
+"Central","Male",2.9939,4.639935,2011,"Uganda"
+"Central","Female",3.19026,4.780497,2011,"Uganda"
+"Eastern","Male",2.60796,4.321578,2011,"Uganda"
+"Eastern","Female",2.66699,4.299752,2011,"Uganda"
+"Nothern","Male",2.68689,4.337537,2011,"Uganda"
+"Nothern","Female",2.51892,4.105278,2011,"Uganda"
+"Western","Male",2.90821,4.439566,2011,"Uganda"
+"Western","Female",2.98953,4.527872,2011,"Uganda"
