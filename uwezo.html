@@ -34,15 +34,6 @@ p {
   font: 100 14px 'Sorts Mill Goudy', serif;
 }
 
-/*form  {
-  font: 100 12px 'Sorts Mill Goudy', serif;
-  padding: 2px 8px;
-  border: solid 1px #ccc;
-  border-radius: 10px;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
-  margin: 5px;
-}*/
-
 .update-button {
   font: 100 14px 'Sorts Mill Goudy', serif;
   padding: 2px 8px;
@@ -137,7 +128,8 @@ rect:first-child {
         h = 500 - margin.top - margin.bottom,
         padding = 0,
         barWidth = Math.floor(w / 25) - 1,
-        dataset, year0, year1;
+        dataset = [], 
+        regions, region, rects, url;
 
     var x = d3.scale.ordinal()
             .rangeRoundBands([0, w], 0.05);
@@ -166,13 +158,6 @@ rect:first-child {
 
     function viz() {
 
-      //Why do I have to do this again?
-      country = document.getElementById("country").value;
-      year = document.getElementById("year").value;
-
-      var subject1 = d3.max(dataset, function(d) { return d[subject]; }),
-          subject0 = d3.min(dataset, function(d) { return d[subject]; });
-
           // Produce a map from region to [male, female].
           dataset = d3.nest()
               .sortKeys(d3.ascending)
@@ -182,77 +167,74 @@ rect:first-child {
               .entries(dataset);
 
             //creating groups for regions
-            var regions = svg.append("g")
-                .classed("regions", true);
+            regions = svg.append("g")
+              .classed("regions", true);
+
+            region = regions.selectAll(".region")
+              .data(dataset);
 
             x.domain(dataset.map(function(d) { return d.key; }));
             y.domain(scaled(subject));
 
-              var region = regions.selectAll(".region")
-                    .data(dataset);
+            region.enter()
+              .append("g")
+              .attr("class", "region");
 
-                region.enter()
-                    .append("g")
-                    .attr("class", "region");
+            //This transition moves the rects horizontally. 
+            //Add .transition().duration() to get the bars sliding in.
+            //exit().remove() is not working.
+            region.transition()
+              .duration(1500)
+              .attr("transform", function(d) { 
+                  return "translate(" + x(d.key) + ",0)"; 
+                });
 
-                    //This transition moves the rects horizontally. 
-                    //exit().remove() is not working.
-                region.transition()
-                      .duration(1500)
-                      .attr("transform", function(d) { 
-                      return "translate(" + x(d.key) + ",0)"; 
-                    });
+            region.exit().remove();
 
-                region.exit().remove();
+            rects = region.selectAll("rect")
+                .data(function(region) { 
+                  return region.values;
+                });
 
-                var rects = region.selectAll("rect")
-                    .data(function(region) { 
-                      return region.values;
-                    });
+            rects.enter()
+                .append("rect")
+                .attr("x", 0)
+                .attr("y", function(region) {
+                  for (var i=0; i<2; i++) {
+                     if (!region.values[i]) {
+                        return 0; 
+                     }
+                  if (year==2010 && region.values[0] !== undefined ) {
+                    return y(region.values[0].values[0][subject]);
+                  }
+                  if (year==2011 && region.values[1] !== undefined) {
+                    return y(region.values[1].values[0][subject]);
+                  }
+                  if (year==2012 && region.values[2] !== undefined) {
+                    return y(region.values[2].values[0][subject]);
+                  }
+                   }
+                })
+                .attr("height", function(region) { 
+                  for (var i=0; i<2; i++) {
+                     if (!region.values[i]) {
+                        return 0; 
+                     }
+                  if (year==2010 && region.values[0] !== undefined) {
+                    return h-y(region.values[0].values[0][subject]);
+                  }
+                  if (year==2011 && region.values[1] !== undefined) {
+                    return h-y(region.values[1].values[0][subject]);
+                  }
+                  if (year==2012 && region.values[2] !== undefined) {
+                    return h-y(region.values[2].values[0][subject]);
+                  }
+                  }
+                })
+                .attr("width", barWidth)
+                .attr("class", function(region) { return region.key; });
 
-                rects.enter()
-                    .append("rect");
-
-                //This transition will only affect rect heights.
-                rects.transition()
-                    .duration(1500)
-                    .attr("x", 0)
-                    .attr("y", function(region) {
-                      for (var i=0; i<2; i++) {
-                         if (!region.values[i]) {
-                            return 0; 
-                         }
-                      if (year==2010 && region.values[0] !== undefined ) {
-                        return y(region.values[0].values[0][subject]);
-                      }
-                      if (year==2011 && region.values[1] !== undefined) {
-                        return y(region.values[1].values[0][subject]);
-                      }
-                      if (year==2012 && region.values[2] !== undefined) {
-                        return y(region.values[2].values[0][subject]);
-                      }
-                       }
-                    })
-                    .attr("width", barWidth)
-                    .attr("height", function(region) { 
-                      for (var i=0; i<2; i++) {
-                         if (!region.values[i]) {
-                            return 0; 
-                         }
-                      if (year==2010 && region.values[0] !== undefined) {
-                        return h-y(region.values[0].values[0][subject]);
-                      }
-                      if (year==2011 && region.values[1] !== undefined) {
-                        return h-y(region.values[1].values[0][subject]);
-                      }
-                      if (year==2012 && region.values[2] !== undefined) {
-                        return h-y(region.values[2].values[0][subject]);
-                      }
-                      }
-                    })
-                    .attr("class", function(region) { return region.key; });
-
-                rects.exit().remove();
+            rects.exit().remove();
 
 
 
@@ -310,16 +292,19 @@ rect:first-child {
 
 d3.select('input[type=button]').on('click', function() {
 
-        var country = document.getElementById("country").value,
-            url = country.toUpperCase();
-            subject = document.getElementById("subject").value,
-            year = document.getElementById("year").value ;
+        country = document.getElementById("country").value;
+        url = country.toUpperCase();
+        subject = document.getElementById("subject").value;
+        year = document.getElementById("year").value ;
 
         url = url.split("");
         url = url[0] + url[1] + ".csv";
 
         subject = subject.toLowerCase();
 
+        console.log(subject);
+        console.log(country);
+        console.log(year);
 
             //DATA
             d3.csv(url, function(error,csv) {
