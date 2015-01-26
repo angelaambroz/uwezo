@@ -165,15 +165,16 @@ rect:first-child {
               .key(function(d) { return d.gender; })
               .entries(dataset);
 
+
+            x.domain(dataset.map(function(d) { return d.key; }));
+            y.domain(scaled(subject));
+
             //creating groups for regions
             regions = svg.append("g")
               .classed("regions", true);
 
             region = regions.selectAll(".region")
               .data(dataset);
-
-            x.domain(dataset.map(function(d) { return d.key; }));
-            y.domain(scaled(subject));
 
             region.enter()
               .append("g")
@@ -187,28 +188,28 @@ rect:first-child {
                   return "translate(" + x(d.key) + ",0)"; 
                 });
 
-            region.exit().remove();
-
-
-
             rects = region.selectAll("rect")
                 .data(function(region) { 
                   return region.values;
                 });
 
             rects.enter()
-                .append("rect");
+                .append("rect")
+                .attr("x", 0)
+                .attr("width", barWidth);
 
             rects.transition()
-                .attr("x", 0)
+                .duration(2000)
                 .attr("y", function(region) {
                   return y(region.values[0][subject]);
                 })
                 .attr("height", function(region) { 
                   return h - y(region.values[0][subject]);
                 })
-                .attr("width", barWidth)
                 .attr("class", function(region) { return region.key; });
+
+
+            region.exit().remove();
 
             rects.exit().remove();
 
