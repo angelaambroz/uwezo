@@ -20,8 +20,8 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 8. Style the ugly drop-down boxes.
 9. Style in general. 
 10. ~~Figure out how to call different `subjects`.~~ 
-11a. `Exit`/`enter`. Transitions! Country transitions (horizontal).
-11b. Year transitions (vertical).
+11a. ~~`Exit`/`enter`. Transitions! Country transitions (horizontal).~~ (Thanks, SO!)
+11b. ~~Year transitions (vertical).~~
 12. ~~Don't keep replicating the same `svg`...~~
 13. ~~Why is `country` breaking in and out of the function (but only for `console.log` and `title`)?~~ Don't know why exactly - something to do with assigning undeclared variables. I've now removed the `var` declaration and it works. But this makes no sense!
 14. ~~Call `year`. (`switch` statement isn't working...)~~
