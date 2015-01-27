@@ -65,13 +65,33 @@ p {
 
 rect {
   fill-opacity: .5;
-  fill: #1f77b4;
+  fill: #e377c2 ;
 }
 
 rect:first-child {
-  fill-opacity: .6;
-  fill: #e377c2;
+  fill-opacity: .8;
+  fill: #1f77b4;
 } 
+
+#tooltip {
+  position: absolute;
+  width: 90px;
+  height: auto;
+  padding: 10px;
+  background-color: none;
+  pointer-events: none;
+}
+
+#tooltip p {
+  margin: 0;
+  font: 400 14px 'Sorts Mill Goudy', serif;
+  line-height: 15px;
+  color: #897171;
+}
+
+#tooltip.hidden {
+  display: none;
+}
 
 
 </style>
@@ -115,7 +135,11 @@ rect:first-child {
     
     </div>
 
-
+<div id="tooltip" class="hidden" style="left: 600px, top: 400px">
+  <p><em><span id="tooltip-subject">Math</span> scores</em></p>
+  <p>Boys: <span id="boy-average">5.0</span></p>
+  <p>Girls: <span id="girl-average">5.0</span></p>
+</div>
 
 
   <script type="text/javascript">
@@ -143,6 +167,38 @@ rect:first-child {
       if (subject=="math") {
         return [0,7];
       }
+    }
+
+    function mouseover() {
+
+      var xPosition = parseFloat(d3.select(this).attr("x")),
+      yPosition = parseFloat(d3.select(this).attr("y")) + 14,
+      boyScore, girlScore;
+
+      //This seems like a stupid way to capture d!
+      d3.select(this)
+        .text(function(d) {
+          console.log(d);
+          boyScore = d3.round(d.values[0].values[0][subject], 1);
+          girlScore = d3.round(d.values[1].values[0][subject], 1);
+        })
+
+
+      d3.select("#tooltip")
+        .style("left", xPosition)
+        .style("top", yPosition);
+
+
+      console.log(boyScore);
+      console.log(girlScore);
+      console.log(xPosition);
+      console.log(yPosition);
+
+      d3.select("#tooltip-subject")
+        .text(function() {
+          return subject;
+        });
+
     }
 
 
@@ -206,7 +262,8 @@ rect:first-child {
 
             region.enter()
               .append("g")
-              .attr("class", "region");
+              .attr("class", "region")
+              .on("mouseover", mouseover);
 
             //This transition moves the rects horizontally. 
             region.transition()
@@ -226,7 +283,7 @@ rect:first-child {
                 .attr("width", barWidth);
 
             rects.transition()
-                .duration(2000)
+                .duration(1500)
                 .attr("y", function(region) {
                   return y(region.values[0][subject]);
                 })
@@ -237,8 +294,6 @@ rect:first-child {
 
 
             region.exit().remove();
-
-            rects.exit().remove();
 
 
             // Title, subtitle
@@ -251,9 +306,15 @@ rect:first-child {
 
             // Axes
             svg.select(".y")
+              .transition()
+              .delay(1000)
+              .duration(750)
               .call(yAxis);
 
             svg.select(".x")
+              .transition()
+              .delay(1000)
+              .duration(750)
               .call(xAxis)
               .selectAll("text")  
                 .style("text-anchor", "end")
