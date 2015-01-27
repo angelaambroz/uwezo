@@ -9,7 +9,6 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 
 
 ### To Do
-(~~completed~~, _in progress_)
 
 1. ~~Decide on exact bar chart type.~~ 
 2. ~~Prep the data for each country in `Stata`. Need: Separate dataset for each country (call it like a url).~~ 
@@ -31,7 +30,8 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 17. Center x-axis labels.
 18. ~~Axis a dynamic function of `subject`.~~
 19. Tooltip: Side info panel.
-20. _Tooltip: boys' + girls' scores, on `mouseover`._ 
+20. ~~Tooltip: boys' + girls' scores, on `mouseover`.~~
+21. Re-order the bars according to height.
   
 
 
