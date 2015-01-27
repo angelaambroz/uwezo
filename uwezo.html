@@ -18,7 +18,7 @@ body {
 }
 
 .subtitle {
-  font: small-caps italic 14px 'Playfair Display', serif;
+  font: italic 14px 'Playfair Display', serif;
 }
 
 .axis {
@@ -75,10 +75,13 @@ rect:first-child {
 
 #tooltip {
   position: absolute;
-  width: 90px;
+  width: 100px;
   height: auto;
   padding: 10px;
-  background-color: none;
+  background-color: white;
+  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
   pointer-events: none;
 }
 
@@ -101,7 +104,7 @@ rect:first-child {
 
     <body>
 
-     <p>Hi! Building the Uwezo viz. (Under heavy-duty construction.)</p>
+     <p>Hi! This is a demo for an interactive web infographic for Uwezo. <i>January 2015.</i>i></p>
 
      
     <div class="user-form">
@@ -136,9 +139,9 @@ rect:first-child {
     </div>
 
 <div id="tooltip" class="hidden" style="left: 600px, top: 400px">
-  <p><em><span id="tooltip-subject">Math</span> scores</em></p>
-  <p>Boys: <span id="boy-average">5.0</span></p>
-  <p>Girls: <span id="girl-average">5.0</span></p>
+  <p><b><span id="tooltip-region">region</span></b></p>
+  <p><em>Boys: <span id="boy-average">5.0</span></em></p>
+  <p><em>Girls: <span id="girl-average">5.0</span></em></p>
 </div>
 
 
@@ -169,36 +172,41 @@ rect:first-child {
       }
     }
 
-    function mouseover() {
+    function mouseover(d) {
 
-      var xPosition = parseFloat(d3.select(this).attr("x")),
-      yPosition = parseFloat(d3.select(this).attr("y")) + 14,
-      boyScore, girlScore;
-
-      //This seems like a stupid way to capture d!
-      d3.select(this)
-        .text(function(d) {
-          console.log(d);
-          boyScore = d3.round(d.values[0].values[0][subject], 1);
-          girlScore = d3.round(d.values[1].values[0][subject], 1);
-        })
-
+      var boyScore = d3.round(d.values[0].values[0][subject], 1),
+        girlScore = d3.round(d.values[1].values[0][subject], 1),
+        xPosition = x(d.key),
+        yPosition;
+      
+      if (d.values[0].values[0][subject] > d.values[1].values[0][subject]) {
+        yPosition = y(d.values[0].values[0][subject]);
+      }
+      else {
+       yPosition = y(d.values[1].values[0][subject]);  
+     }
 
       d3.select("#tooltip")
-        .style("left", xPosition)
-        .style("top", yPosition);
+        .style("left", xPosition+35 + "px")
+        .style("top", yPosition+270 + "px");
 
+      d3.select("#boy-average")
+        .text(boyScore);
 
-      console.log(boyScore);
-      console.log(girlScore);
-      console.log(xPosition);
-      console.log(yPosition);
+      d3.select("#girl-average")
+        .text(girlScore);
 
-      d3.select("#tooltip-subject")
-        .text(function() {
-          return subject;
-        });
+      d3.select("#tooltip-region")
+        .text(d.key);
 
+      d3.select("#tooltip").classed("hidden", false);
+
+    }
+
+    function mouseout() {
+      
+      d3.select("#tooltip").classed("hidden", true);
+    
     }
 
 
@@ -263,7 +271,8 @@ rect:first-child {
             region.enter()
               .append("g")
               .attr("class", "region")
-              .on("mouseover", mouseover);
+              .on("mouseover", mouseover)
+              .on("mouseout", mouseout);
 
             //This transition moves the rects horizontally. 
             region.transition()
@@ -318,8 +327,8 @@ rect:first-child {
               .call(xAxis)
               .selectAll("text")  
                 .style("text-anchor", "end")
-                .attr("dx", "-.8em")
-                .attr("dy", ".15em")
+                .attr("dx", "-.7em")
+                .attr("dy", "-.75em")
                 .attr("transform", function(d) {
                     return "rotate(-90)" 
                 });

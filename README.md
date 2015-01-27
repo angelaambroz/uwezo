@@ -9,6 +9,7 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 
 
 ### To Do
+(~~completed~~, _in progress_)
 
 1. ~~Decide on exact bar chart type.~~ 
 2. ~~Prep the data for each country in `Stata`. Need: Separate dataset for each country (call it like a url).~~ 
@@ -17,8 +18,8 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 5. ~~Drop-down menus for country, subject and year (review all that stuff about embedding functions in sites).~~
 6. Spinning wheel - or just keep the `Submit` button grayed out while loading.
 7. What to do with Swahili? Have it only be an option for TZ/KE?
-8. Style the ugly drop-down boxes.
-9. Style in general. 
+8. ~~Style the ugly drop-down boxes.~~
+9. ~~Style in general.~~
 10. ~~Figure out how to call different `subjects`.~~ 
 11a. ~~`Exit`/`enter`. Transitions! Country transitions (horizontal).~~ (Thanks, SO!)
 11b. ~~Year transitions (vertical).~~
@@ -30,7 +31,7 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 17. Center x-axis labels.
 18. ~~Axis a dynamic function of `subject`.~~
 19. Tooltip: Side info panel.
-20. Tooltip: boys' + girls' scores, on `hover`. 
+20. _Tooltip: boys' + girls' scores, on `mouseover`._ 
   
 
 
