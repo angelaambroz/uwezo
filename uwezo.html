@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <title>Visualizing Uwezo</title>
-<script src="d3/d3.min.js" charset="utf-8"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <link href='http://fonts.googleapis.com/css?family=Sorts+Mill+Goudy:400,400italic' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Playfair+Display:400,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
 <style>
@@ -104,7 +104,7 @@ rect:first-child {
 
     <body>
 
-     <p>Hi! This is a demo for an interactive web infographic for Uwezo. <i>January 2015.</i>i></p>
+     <p>Hi! This is a demo for an interactive web infographic for Uwezo. <i>January 2015.</i></p>
 
      
     <div class="user-form">
@@ -147,7 +147,7 @@ rect:first-child {
 
   <script type="text/javascript">
 
-  "use strict";
+  //"use strict";
 
     var margin = {top: 100, right: 10, bottom: 100, left: 30},
         w = 600 - margin.left - margin.right,
@@ -155,6 +155,7 @@ rect:first-child {
         padding = 0,
         barWidth = Math.floor(w / 25) - 1,
         dataset = [], 
+        country, year, subject,
         regions, region, rects, url, cntry, yr;
 
     var x = d3.scale.ordinal()
@@ -328,9 +329,9 @@ rect:first-child {
               .selectAll("text")  
                 .style("text-anchor", "end")
                 .attr("dx", "-.7em")
-                .attr("dy", "-.75em")
+                .attr("dy", ".15em")
                 .attr("transform", function(d) {
-                    return "rotate(-90)" 
+                    return "rotate(-45)" 
                 });
 
     } //end viz function
@@ -340,13 +341,15 @@ d3.select('input[type=button]').on('click', function() {
 
         country = document.getElementById("country").value;
         subject = document.getElementById("subject").value;
-        year = document.getElementById("year").value ;
+        year = document.getElementById("year").value;
 
         cntry = country.toUpperCase();
         cntry = cntry.split("");
         yr = year.split("");
 
         url = cntry[0] + cntry[1] + yr[2] + yr[3] + ".csv";
+
+        console.log(url);
 
         subject = subject.toLowerCase();
 

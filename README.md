@@ -23,16 +23,17 @@ Dynamic bar chart, by region, of kids' performance on English, Math, Swahili for
 11. ~~`Exit`/`enter`. Transitions! Country transitions (horizontal).~~ (Thanks, SO!)
 11. ~~Year transitions (vertical).~~
 12. ~~Don't keep replicating the same `svg`...~~
-13. ~~Why is `country` breaking in and out of the function (but only for `console.log` and `title`)?~~ Don't know why exactly - something to do with assigning undeclared variables. I've now removed the `var` declaration and it works. But this makes no sense!
+13. ~~Why is `country` breaking in and out of the function (but only for `console.log` and `title`)?~~ Don't know why exactly - something to do with assigning undeclared variables. I've now removed the `var` declaration and it works. But this makes no sense! (I think this is related to #23...)
 14. ~~Call `year`. (`switch` statement isn't working...)~~
 15. Make `barWidth` a function of the number of regions. 
 16. ~~Rift Valley (KE) is missing 2011. Mtwara (TZ) is missing 2012. Add them as missing (in `Stata').~~
-17. Center x-axis labels.
+17. Center x-axis labels, arrghh.
 18. ~~Axis a dynamic function of `subject`.~~
 19. Tooltip: Side info panel.
 20. ~~Tooltip: boys' + girls' scores, on `mouseover`.~~
-21. Re-order the bars according to height.
+21. Re-order the bars according to height (`button`?).
 22. Instead of absolute values (e.g. [0,5] for English), convert all averages to percent? This would remove the shifting scales thing, which is confusing, I think.
+23. ~~Check that this works in Google Chrome as well.~~ It doesn't! Something is going on. It works locally, but not on the server. Why? 
   
 
 
